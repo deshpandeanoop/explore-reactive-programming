@@ -1,31 +1,26 @@
 package com.explore.rx.service.impl;
 
-import com.explore.rx.beans.model.Post;
 import com.explore.rx.beans.model.User;
-import com.explore.rx.constants.ApplicationConstants;
 import com.explore.rx.constants.JsonPlaceHolderResources;
-import com.explore.rx.exceptions.InternalServiceException;
-import com.explore.rx.exceptions.UserNotFoundException;
 import com.explore.rx.service.IPostService;
 import com.explore.rx.service.IUserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+
 
 @Service
 @Slf4j
-public class UserService extends BaseJsonPlaceHolderService implements IUserService {
+@RequiredArgsConstructor
+public class UserService implements IUserService {
 
-    @Autowired
-    private IPostService postService;
-
-    public UserService(@Autowired WebClient.Builder webClientBuilder) {
-        super(webClientBuilder);
-    }
+    private final RestTemplate restTemplate;
+    private final IPostService postService;
 
     /**
      * Fetches all users from Json place holder service
@@ -33,19 +28,10 @@ public class UserService extends BaseJsonPlaceHolderService implements IUserServ
      * @return
      */
     @Override
-    public Flux<User> fetchAll() {
+    public List<User> fetchAll() {
         log.info("Calling json place holder service to fetch all users");
-        return webClientBuilder
-                .baseUrl(jsonPlaceHolderApiBaseUrl)
-                .build()
-                .get()
-                .uri(JsonPlaceHolderResources.USERS.getUri())
-                .retrieve()
-                .onStatus(HttpStatus::is5xxServerError, clientResponse -> {
-                    log.error("Internal service error received from json place holder service for fetch all users call. Here is the message");
-                    return Mono.just(new InternalServiceException("Internal service error occurred while fetching all users from the system"));
-                })
-                .bodyToFlux(User.class);
+        return restTemplate.exchange(JsonPlaceHolderResources.USERS.getUri(), HttpMethod.GET, null, new ParameterizedTypeReference<List<User>>() {
+        }).getBody();
     }
 
     /**
@@ -55,27 +41,8 @@ public class UserService extends BaseJsonPlaceHolderService implements IUserServ
      * @return
      */
     @Override
-    public Mono<User> fetchById(Integer userId) {
+    public User fetchById(Integer userId) {
         log.info("Calling json place holder service with User Id : {}", userId);
-        Mono<User> userMono = webClientBuilder
-                .baseUrl(jsonPlaceHolderApiBaseUrl)
-                .build()
-                .get()
-                .uri(JsonPlaceHolderResources.USERS.getUri() + "/" + userId)
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientResponse -> {
-                    log.error("User with Id {} not found in json place holder service", userId);
-                    return Mono.just(new UserNotFoundException("User " + userId + " is not found. Please pass valid user Id. To get all users in the system, use '/users' endpoint"));
-                })
-                .onStatus(HttpStatus::is5xxServerError, clientResponse -> {
-                    log.error("Internal service error received from json place holder service for fetch all users call. Here is the message");
-                    return Mono.just(new InternalServiceException("Internal service error occurred while fetching all users from the system"));
-                })
-                .bodyToMono(User.class);
-
-       return Mono.zip(userMono, postService.fetchByUserId(userId), (user, posts) -> {
-           user.getPosts().addAll(posts);
-           return user;
-       });
+        return null;
     }
 }

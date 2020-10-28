@@ -5,9 +5,9 @@ import com.explore.rx.controller.IUserController;
 import com.explore.rx.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivestreams.Publisher;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -21,7 +21,7 @@ public class UserController implements IUserController {
      * @return
      */
     @Override
-    public Publisher<User> fetchAll() {
+    public List<User> fetchAll() {
         log.debug("Received request for fetchAllUsers");
         return userService.fetchAll();
     }
@@ -32,7 +32,7 @@ public class UserController implements IUserController {
      * @return
      */
     @Override
-    public Publisher<User> fetchById(Integer userId) {
+    public User fetchById(Integer userId) {
         log.debug("Received fetchUser request for Id : {}", userId);
         return userService.fetchById(userId);
     }

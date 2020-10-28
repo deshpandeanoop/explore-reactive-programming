@@ -5,8 +5,9 @@ import com.explore.rx.controller.IPostController;
 import com.explore.rx.service.IPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivestreams.Publisher;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -20,7 +21,7 @@ public class PostController implements IPostController {
      * @return
      */
     @Override
-    public Publisher<Post> fetchAll() {
+    public List<Post> fetchAll() {
         log.debug("Received fetchAllPosts call");
         return postService.fetchAll();
     }

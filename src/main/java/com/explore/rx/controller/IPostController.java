@@ -1,9 +1,10 @@
 package com.explore.rx.controller;
 
 import com.explore.rx.beans.model.Post;
-import org.reactivestreams.Publisher;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @RequestMapping("/posts")
 public interface IPostController {
@@ -13,5 +14,5 @@ public interface IPostController {
      * @return
      */
     @GetMapping
-    Publisher<Post> fetchAll();
+    List<Post> fetchAll();
 }

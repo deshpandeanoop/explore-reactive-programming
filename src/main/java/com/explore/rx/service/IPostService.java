@@ -1,9 +1,6 @@
 package com.explore.rx.service;
 
 import com.explore.rx.beans.model.Post;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import java.util.List;
 
 public interface IPostService {
@@ -13,7 +10,7 @@ public interface IPostService {
      *
      * @return
      */
-    Flux<Post> fetchAll();
+    List<Post> fetchAll();
 
     /**
      * Fetches all posts of given user from json place holder service
@@ -21,5 +18,5 @@ public interface IPostService {
      * @param userId
      * @return
      */
-    Mono<List<Post>> fetchByUserId(Integer userId);
+    List<Post> fetchByUserId(Integer userId);
 }

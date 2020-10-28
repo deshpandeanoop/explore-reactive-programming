@@ -5,8 +5,9 @@ import com.explore.rx.controller.ICommentsController;
 import com.explore.rx.service.ICommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivestreams.Publisher;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -16,7 +17,7 @@ public class CommentsController implements ICommentsController {
     private final ICommentService commentService;
 
     @Override
-    public Publisher<Comment> fetchAll() {
+    public List<Comment> fetchAll() {
         log.debug("Received fetchAll comments requests");
         return commentService.fetchAll();
     }
